@@ -7,6 +7,7 @@ class Transaction:
             raise ValueError("Описание должно быть непустой строкой.")
         if not isinstance(amount, (int, float)) or amount <= 0:
             raise ValueError("Сумма должна быть положительным числом.")
+
         self.description = description
         self.amount = amount
         self.date = date if date else datetime.now()
