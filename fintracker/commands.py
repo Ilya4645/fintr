@@ -4,7 +4,17 @@ from fintracker.models import Expense, Income
 from fintracker.storage import add_expense, get_transactions, delete_transaction
 from fintracker.report import generate_expenses, generate_incomings, gen_sum
 
+"""
+Модуль commands - обработчик команд для командной строки main.py.
+"""
 def add_command(args):
+    """
+    Обработчик команды add.
+
+    Raises:
+        ValueError: Ошибка ввода (указывается причина ошибки).
+        Exception: Ошибка при добавлении транзакции (указывается причина ошибки).
+    """
     try:
         transaction_date = None
         if args.date:
@@ -27,6 +37,13 @@ def add_command(args):
         print(f"Произошла ошибка при добавлении транзакции: {e}")
 
 def view_command(args):
+    """
+    Обработчик команды view.
+
+    Raises:
+        ValueError: Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).
+        Exception: Ошибка при просмотре транзакции (указывается причина ошибки).
+    """
     start_date, end_date = None, None
     today = datetime.now()
     if args.period == 'day':
@@ -73,6 +90,12 @@ def view_command(args):
         print(f"Произошла ошибка при просмотре транзакций: {e}")
 
 def report_command(args):
+    """
+    Обработчик команды report.
+
+    Raises:
+        ValueError: Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).
+    """
     start_date, end_date = None, None
 
     if args.period == 'month':
@@ -117,6 +140,12 @@ def report_command(args):
         print("Неизвестный тип отчета.")
 
 def delete_command(args):
+    """
+    Обработчик команды delete.
+
+    Raises:
+        Exception: Ошибка при удалении транзакции (указывается причина ошибки, чаще всего возникает из-за того, что номера транзакции нет в базе).
+    """
     if args.number is None:
         print("Ошибка: Необходимо указать номер транзакции для удаления с помощью --number.")
         return

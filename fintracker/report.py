@@ -1,8 +1,21 @@
 import pandas as pd
 from datetime import datetime, date
 from fintracker.storage import get_transactions
-
+"""
+Модуль report - генерирует отчеты по заданным условиям.
+"""
 def generate_expenses(start_date: datetime = None, end_date: datetime = None, output_file: str = None) -> pd.DataFrame:
+    """
+    Генерирует отчет по расходам по заданным условиям и сохраняет его в файл.
+
+    Args:
+        start_date(datetime): начальная дата фильтрации.
+        end_date(datetime): конечная дата фильтрации.
+        output_file(str): название файла для сохранения отчета (по умолчанию - expenses_by_category_report.csv).
+
+    Returns:
+        report - датафрейм с отчетом.
+    """
     df = get_transactions(start_date, end_date)
     exp_df = df[df['type'] == 'Расход']
 
@@ -24,6 +37,17 @@ def generate_expenses(start_date: datetime = None, end_date: datetime = None, ou
     return report
 
 def generate_incomings(start_date: datetime = None, end_date: datetime = None, output_file: str = None) -> pd.DataFrame:
+    """
+    Генерирует отчет по доходам по заданным условиям и сохраняет его в файл.
+
+    Args:
+        start_date(datetime): начальная дата фильтрации.
+        end_date(datetime): конечная дата фильтрации.
+        output_file(str): название файла для сохранения отчета (по умолчанию - incomings_by_category_report.csv).
+
+    Returns:
+        report - датафрейм с отчетом.
+    """
     df = get_transactions(start_date, end_date)
     inc_df = df[df['type'] == 'Доход']
 
@@ -45,6 +69,17 @@ def generate_incomings(start_date: datetime = None, end_date: datetime = None, o
     return report
 
 def gen_sum(start_date: datetime = None, end_date: datetime = None, output_file: str = None):
+    """
+    Генерирует общий отчет по заданным условиям и сохраняет его в файл.
+
+    Args:
+        start_date(datetime): начальная дата фильтрации.
+        end_date(datetime): конечная дата фильтрации.
+        output_file(str): название файла для сохранения отчета (по умолчанию - summary_report.csv).
+
+    Returns:
+        report - датафрейм с отчетом.
+        """
     df = get_transactions(start_date, end_date)
     if df.empty:
         print("Нет данных для формирования сводного отчета.")

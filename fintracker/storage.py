@@ -1,10 +1,21 @@
 import pandas as pd
 from fintracker.models import Expense, Income
-from datetime import datetime, date
+from datetime import datetime
+
+"""
+Модуль storage - добавление, удаление транзакций.
+"""
 
 DATA_FILE = 'C:/Users/user/fintr/transactions.csv'
 
 def _load_transactions() -> pd.DataFrame:
+    """
+    Загружает транзакции из CSV таблицы и преобразует их в DataFrame.
+    Returns:
+        df: Датафрейм с транзакциями.
+    Raises:
+        Exceprion: Если произошла ошибка при чтении файла.
+    """
     try:
         df = pd.read_csv(DATA_FILE, encoding='cp1251', sep=';')
         df['date'] = pd.to_datetime(df['date'])
@@ -14,12 +25,27 @@ def _load_transactions() -> pd.DataFrame:
         return pd.DataFrame(columns=['type', 'description', 'amount', 'category', 'source', 'date'])
 
 def _save_transactions(df: pd.DataFrame):
+    """
+    Сохраняет транзакции в файл
+
+       Args:
+           df(pd.DataFrame): Датафрейм с транзакциями
+
+       Raises:
+            Exceprion: Если произошла ошибка при чтении файла.
+    """
     try:
         df.to_csv(DATA_FILE, sep=';', index=False, encoding='cp1251')
         print(f"Данные успешно сохранены в {DATA_FILE}")
     except Exception as e:
         print(f"Ошибка при сохранении файла {DATA_FILE}: {e}")
 def add_expense(transaction):
+    """
+    Подготавливает данные для записи в файл
+
+    Returns:
+        new_row: подготовленный датафрейм для записи в таблицу.
+    """
     df = _load_transactions()
     if isinstance(transaction, Expense):
         new_row = pd.DataFrame([{
@@ -47,6 +73,14 @@ def add_expense(transaction):
     _save_transactions(df)
 
 def get_transactions(start_date: datetime = None, end_date: datetime = None) -> pd.DataFrame:
+    """Фильтрует датафрейм по заданным условиям
+    Args:
+        start_date(datetime): начальная дата фильтррации
+        end_date(datetime): конечная дата фильтрации
+
+    Returns:
+        df: отфильтрованный датафрейм
+    """
     df = _load_transactions()
     if not start_date and not end_date:
         return df
@@ -58,6 +92,12 @@ def get_transactions(start_date: datetime = None, end_date: datetime = None) -> 
     return df
 
 def delete_transaction(transaction_id: int):
+    """
+    Удаляет транзакцию под заданным номером
+
+    Args:
+        transaction_id(int): номер транзакции, который требуется удалить
+    """
     df = _load_transactions()
     if 0 <= transaction_id < len(df):
         df = df.drop(transaction_id).reset_index(drop=True)
