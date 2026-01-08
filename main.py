@@ -26,6 +26,19 @@ def main():
     parser_view.add_argument('--from-to', help='Просмотреть транзакции в диапазоне дат (YYYY-MM-DD,YYYY-MM-DD)')
     parser_view.set_defaults(func=commands.view_command)
 
+    # Команда генерации отчетов --report
+    parser_report = subparsers.add_parser('report', help='Сгенерировать отчет')
+    parser_report.add_argument('--report-type', choices=['categories', 'summary', 'sources'], required=True, help='Тип отчета: "categories" (расходы по категориям), "sources" (доходы) или "summary" (сводный отчет).')
+    parser_report.add_argument('--period', choices=['month'], help='Период для отчета "categories".')
+    parser_report.add_argument('--from-to', help='Диапазон дат для отчета (YYYY-MM-DD,YYYY-MM-DD).')
+    parser_report.add_argument('--output', help='Имя файла для сохранения отчета (CSV). Если не указано, будет использовано имя по умолчанию.')
+    parser_report.set_defaults(func=commands.report_command)
+
+    # Команда удаления транзакции --delete
+    parser_delete = subparsers.add_parser('delete', help='Удалить транзакцию по номеру')
+    parser_delete.add_argument('--number', type=int, required=True, help='Номер транзакции для удаления (см. вывод команды view)')
+    parser_delete.set_defaults(func=commands.delete_command)
+
     args = parser.parse_args()
 
     if hasattr(args, 'func'):

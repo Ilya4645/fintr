@@ -1,6 +1,6 @@
 import pandas as pd
 from fintracker.models import Expense, Income
-from datetime import datetime
+from datetime import datetime, date
 
 DATA_FILE = 'C:/Users/user/fintr/transactions.csv'
 
@@ -11,12 +11,7 @@ def _load_transactions() -> pd.DataFrame:
         return df
     except Exception as e:
         print(f"Ошибка при чтении файла {DATA_FILE}: {e}")
-        return pd.DataFrame(columns=['№', 'type', 'description', 'amount', 'category', 'source', 'date'])
-
-def _load_id():
-    df = _load_transactions()
-    counts = df['№'].count()
-    return counts
+        return pd.DataFrame(columns=['type', 'description', 'amount', 'category', 'source', 'date'])
 
 def _save_transactions(df: pd.DataFrame):
     try:
@@ -26,10 +21,8 @@ def _save_transactions(df: pd.DataFrame):
         print(f"Ошибка при сохранении файла {DATA_FILE}: {e}")
 def add_expense(transaction):
     df = _load_transactions()
-    counts = _load_id()
     if isinstance(transaction, Expense):
         new_row = pd.DataFrame([{
-            '№': counts+1,
             'type': 'Расход',
             'description': transaction.description,
             'amount': transaction.amount,
@@ -39,7 +32,6 @@ def add_expense(transaction):
         }])
     elif isinstance(transaction, Income):
         new_row = pd.DataFrame([{
-            '№': counts + 1,
             'type': 'Доход',
             'description': transaction.description,
             'amount': transaction.amount,
@@ -64,3 +56,12 @@ def get_transactions(start_date: datetime = None, end_date: datetime = None) -> 
         df = df[df['date'] <= end_date]
 
     return df
+
+def delete_transaction(transaction_id: int):
+    df = _load_transactions()
+    if 0 <= transaction_id < len(df):
+        df = df.drop(transaction_id).reset_index(drop=True)
+        _save_transactions(df)
+        print(f"Транзакция под номером {transaction_id} удалена.")
+    else:
+        print(f"Ошибка: Транзакция под номером {transaction_id} не найдена.")

@@ -1,10 +1,10 @@
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from fintracker.models import Expense, Income
-from fintracker.storage import add_expense, get_transactions
+from fintracker.storage import add_expense, get_transactions, delete_transaction
+from fintracker.report import generate_expenses, generate_incomings, gen_sum
 
 def add_command(args):
-    """Обработчик команды --add."""
     try:
         transaction_date = None
         if args.date:
@@ -72,3 +72,55 @@ def view_command(args):
     except Exception as e:
         print(f"Произошла ошибка при просмотре транзакций: {e}")
 
+def report_command(args):
+    start_date, end_date = None, None
+
+    if args.period == 'month':
+        today = datetime.now()
+        start_date = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        next_month = start_date.replace(month=start_date.month + 1) if start_date.month < 12 else start_date.replace(year=start_date.year + 1, month=1)
+        end_date = next_month - timedelta(microseconds=1)
+    elif args.from_to:
+        try:
+            dates = args.from_to.split(',')
+            if len(dates) == 2:
+                start_date = datetime.strptime(dates[0].strip(), '%Y-%m-%d')
+                end_date = datetime.strptime(dates[1].strip(), '%Y-%m-%d')
+                end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+            else:
+                print("Ошибка формата для --from-to. Используйте YYYY-MM-DD,YYYY-MM-DD.")
+                return
+        except ValueError:
+            print("Ошибка формата даты для --from-to. Используйте YYYY-MM-DD.")
+            return
+
+    if args.report_type == 'categories':
+        output_file = args.output if args.output else 'expenses_by_category_report.csv'
+        report_df = generate_expenses(start_date, end_date, output_file)
+        if not report_df.empty:
+            print("\n--- Отчет по расходам по категориям ---")
+            print(report_df.to_string(index=False))
+            print("--------------------------------------\n")
+    elif args.report_type == 'sources':
+        output_file = args.output if args.output else 'incomings_by_category_report.csv'
+        report_df = generate_incomings(start_date, end_date, output_file)
+        if not report_df.empty:
+            print("\n--- Отчет по доходам по категориям ---")
+            print(report_df.to_string(index=False))
+            print("--------------------------------------\n")
+    elif args.report_type == 'summary':
+        output_file = args.output if args.output else 'summary_report.csv'
+        report_df = gen_sum(start_date, end_date, output_file)
+        if not report_df.empty:
+            print(report_df)
+    else:
+        print("Неизвестный тип отчета.")
+
+def delete_command(args):
+    if args.number is None:
+        print("Ошибка: Необходимо указать номер транзакции для удаления с помощью --number.")
+        return
+    try:
+        delete_transaction(args.number)
+    except Exception as e:
+        print(f"Произошла ошибка при удалении транзакции: {e}")
