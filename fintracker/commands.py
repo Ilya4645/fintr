@@ -1,7 +1,7 @@
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 from fintracker.models import Expense, Income
-from fintracker.storage import add_expense
+from fintracker.storage import add_expense, get_transactions
 
 def add_command(args):
     """Обработчик команды --add."""
@@ -25,3 +25,50 @@ def add_command(args):
         print(f"Ошибка ввода: {ve}")
     except Exception as e:
         print(f"Произошла ошибка при добавлении транзакции: {e}")
+
+def view_command(args):
+    start_date, end_date = None, None
+    today = datetime.now()
+    if args.period == 'day':
+        start_date = today.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_date = start_date + timedelta(days=1) - timedelta(microseconds=1)
+    elif args.period == 'month':
+        start_date = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        next_month = start_date.replace(month=start_date.month + 1) if start_date.month < 12 else start_date.replace(year=start_date.year + 1, month=1)
+        end_date = next_month - timedelta(microseconds=1)
+    elif args.period == 'year':
+        start_date = today.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        next_year = start_date.replace(year=start_date.year + 1)
+        end_date = next_year - timedelta(microseconds=1)
+    elif args.since:
+        try:
+            start_date = datetime.strptime(args.since, '%Y-%m-%d')
+        except ValueError:
+            print("Ошибка формата даты для --since. Используйте YYYY-MM-DD.")
+            return
+    elif args.from_to:
+        try:
+            dates = args.from_to.split(',')
+            if len(dates) == 2:
+                start_date = datetime.strptime(dates[0].strip(), '%Y-%m-%d')
+                end_date = datetime.strptime(dates[1].strip(), '%Y-%m-%d')
+                # Устанавливаем конец дня для end_date, чтобы включить весь день
+                end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+            else:
+                print("Ошибка формата для --from-to. Используйте YYYY-MM-DD,YYYY-MM-DD.")
+                return
+        except ValueError:
+            print("Ошибка формата даты для --from-to. Используйте YYYY-MM-DD.")
+            return
+
+    try:
+        df = get_transactions(start_date, end_date)
+        if df.empty:
+            print("Нет транзакций за указанный период.")
+        else:
+            print("\n Ваши Транзакции")
+            print(df)
+            print("-----------------------\n")
+    except Exception as e:
+        print(f"Произошла ошибка при просмотре транзакций: {e}")
+

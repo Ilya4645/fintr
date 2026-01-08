@@ -19,6 +19,13 @@ def main():
     parser_add.add_argument('--source', help='Источник дохода (обязательно для --income)')
     parser_add.set_defaults(func=commands.add_command)
 
+    # Команда просмотра транзакций --view
+    parser_view = subparsers.add_parser('view', help='Просмотреть транзакции')
+    parser_view.add_argument('--period', choices=['day', 'month', 'year'], help='Период просмотра (день, месяц, год)')
+    parser_view.add_argument('--since', help='Просмотреть транзакции с указанной даты (YYYY-MM-DD)')
+    parser_view.add_argument('--from-to', help='Просмотреть транзакции в диапазоне дат (YYYY-MM-DD,YYYY-MM-DD)')
+    parser_view.set_defaults(func=commands.view_command)
+
     args = parser.parse_args()
 
     if hasattr(args, 'func'):

@@ -53,3 +53,14 @@ def add_expense(transaction):
 
     df = pd.concat([df, new_row], ignore_index=True)
     _save_transactions(df)
+
+def get_transactions(start_date: datetime = None, end_date: datetime = None) -> pd.DataFrame:
+    df = _load_transactions()
+    if not start_date and not end_date:
+        return df
+    if start_date:
+        df = df[df['date'] >= start_date]
+    if end_date:
+        df = df[df['date'] <= end_date]
+
+    return df
