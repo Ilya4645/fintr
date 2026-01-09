@@ -47,6 +47,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Модуль Commands</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.commands.add_command"><code class="docutils literal notranslate"><span class="pre">add_command()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fintracker.commands.backup_command"><code class="docutils literal notranslate"><span class="pre">backup_command()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.commands.delete_command"><code class="docutils literal notranslate"><span class="pre">delete_command()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.commands.report_command"><code class="docutils literal notranslate"><span class="pre">report_command()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.commands.view_command"><code class="docutils literal notranslate"><span class="pre">view_command()</span></code></a></li>
@@ -81,18 +82,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-fintracker.commands">
-<span id="commands"></span><h1>Модуль Commands<a class="headerlink" href="#module-fintracker.commands" title="Ссылка на этот заголовок"></a></h1>
-<dl class="py function">
+  <section id="commands">
+<h1>Модуль Commands<a class="headerlink" href="#commands" title="Ссылка на этот заголовок"></a></h1>
+<p>Модуль <strong>commands</strong> - обработчик команд для командной строки main.py.</p>
+<dl class="py function" id="module-fintracker.commands">
 <dt class="sig sig-object py" id="fintracker.commands.add_command">
 <span class="sig-prename descclassname"><span class="pre">fintracker.commands.</span></span><span class="sig-name descname"><span class="pre">add_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.commands.add_command" title="Ссылка на это определение"></a></dt>
 <dd><p>Обработчик команды add.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – аргументы, передаваемые через подкоманды «–date» (дата совершения транзакции, по умолчанию - текущий день), «–expense», «–income», «–description», «–sum», «–category» (для расходов), «–source» (для доходов).</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>ValueError</strong> – Ошибка ввода (указывается причина ошибки).</p></li>
 <li><p><strong>Exception</strong> – Ошибка при добавлении транзакции (указывается причина ошибки).</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fintracker.commands.backup_command">
+<span class="sig-prename descclassname"><span class="pre">fintracker.commands.</span></span><span class="sig-name descname"><span class="pre">backup_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.commands.backup_command" title="Ссылка на это определение"></a></dt>
+<dd><p>Обработчик команды backup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Ошибка при создании копии (указывается причина ошибки).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -102,8 +118,11 @@
 <span class="sig-prename descclassname"><span class="pre">fintracker.commands.</span></span><span class="sig-name descname"><span class="pre">delete_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.commands.delete_command" title="Ссылка на это определение"></a></dt>
 <dd><p>Обработчик команды delete.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Exception</strong> – Ошибка при удалении транзакции (указывается причина ошибки, чаще всего возникает из-за того, что номера транзакции нет в базе).</p>
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – аргументы, передаваемые через подкоманду «–number».</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Ошибка при удалении транзакции (указывается причина ошибки, чаще всего возникает из-за того, что номера транзакции нет в базе).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -113,8 +132,11 @@
 <span class="sig-prename descclassname"><span class="pre">fintracker.commands.</span></span><span class="sig-name descname"><span class="pre">report_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.commands.report_command" title="Ссылка на это определение"></a></dt>
 <dd><p>Обработчик команды report.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ValueError</strong> – Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).</p>
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – аргументы, передаваемые через подкоманды «–period» (month - месяц), «–from-to» (указывается одна или две даты), «–report_type» (отчет по доходам/расходам).</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -124,8 +146,11 @@
 <span class="sig-prename descclassname"><span class="pre">fintracker.commands.</span></span><span class="sig-name descname"><span class="pre">view_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.commands.view_command" title="Ссылка на это определение"></a></dt>
 <dd><p>Обработчик команды view.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Исключение<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> – аргументы, передаваемые через подкоманды «–period» (month - месяц, day - день, year - год), «–since» (указывается дата), «–from-to» (указывается одна или две даты).</p>
+</dd>
+<dt class="field-even">Исключение<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
 <li><p><strong>ValueError</strong> – Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).</p></li>
 <li><p><strong>Exception</strong> – Ошибка при просмотре транзакции (указывается причина ошибки).</p></li>
 </ul>

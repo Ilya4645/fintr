@@ -1,7 +1,6 @@
-import argparse
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from fintracker.models import Expense, Income
-from fintracker.storage import add_expense, get_transactions, delete_transaction
+from fintracker.storage import add_expense, get_transactions, delete_transaction, save_backup
 from fintracker.report import generate_expenses, generate_incomings, gen_sum
 
 """
@@ -10,6 +9,9 @@ from fintracker.report import generate_expenses, generate_incomings, gen_sum
 def add_command(args):
     """
     Обработчик команды add.
+
+    Args:
+        args: аргументы, передаваемые через подкоманды "--date" (дата совершения транзакции, по умолчанию - текущий день), "--expense", "--income", "--description", "--sum", "--category" (для расходов), "--source" (для доходов).
 
     Raises:
         ValueError: Ошибка ввода (указывается причина ошибки).
@@ -39,6 +41,9 @@ def add_command(args):
 def view_command(args):
     """
     Обработчик команды view.
+
+    Args:
+        args: аргументы, передаваемые через подкоманды "--period" (month - месяц, day - день, year - год), "--since" (указывается дата), "--from-to" (указывается одна или две даты).
 
     Raises:
         ValueError: Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).
@@ -93,6 +98,9 @@ def report_command(args):
     """
     Обработчик команды report.
 
+    Args:
+        args: аргументы, передаваемые через подкоманды "--period" (month - месяц), "--from-to" (указывается одна или две даты), "--report_type" (отчет по доходам/расходам).
+
     Raises:
         ValueError: Ошибка ввода (указывается причина ошибки, чаще всего она возникает из-за неверного формата даты).
     """
@@ -143,6 +151,9 @@ def delete_command(args):
     """
     Обработчик команды delete.
 
+    Args:
+        args: аргументы, передаваемые через подкоманду "--number".
+
     Raises:
         Exception: Ошибка при удалении транзакции (указывается причина ошибки, чаще всего возникает из-за того, что номера транзакции нет в базе).
     """
@@ -153,3 +164,15 @@ def delete_command(args):
         delete_transaction(args.number)
     except Exception as e:
         print(f"Произошла ошибка при удалении транзакции: {e}")
+
+def backup_command():
+    """
+    Обработчик команды backup.
+
+    Raises:
+        Exception: Ошибка при создании копии (указывается причина ошибки).
+    """
+    try:
+        save_backup()
+    except Exception as e:
+        print(f"Произошла ошибка при создании копии: {e}")

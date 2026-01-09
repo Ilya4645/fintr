@@ -1,32 +1,37 @@
 import pandas as pd
 from fintracker.models import Expense, Income
 from datetime import datetime
+import sqlite3
 
 """
 Модуль storage - добавление, удаление транзакций.
 """
 
-DATA_FILE = 'C:/Users/user/fintr/transactions.csv'
+DATA_FILE = 'C:/Users/user/fintr/fintr.db'
+BACKUP_FILE = 'C:/Users/user/fintr/transactions_backup.csv'
 
 def _load_transactions() -> pd.DataFrame:
     """
-    Загружает транзакции из CSV таблицы и преобразует их в DataFrame.
+    Загружает транзакции из базы данных и преобразует их в DataFrame.
     Returns:
         df: Датафрейм с транзакциями.
     Raises:
-        Exceprion: Если произошла ошибка при чтении файла.
+        Exceprion: Если произошла ошибка при чтении БД.
     """
     try:
-        df = pd.read_csv(DATA_FILE, encoding='cp1251', sep=';')
+        conn = sqlite3.connect(DATA_FILE)
+        query = 'SELECT * From transactions ORDER BY date ASC'
+        df = pd.read_sql(query, conn)
         df['date'] = pd.to_datetime(df['date'])
+        conn.close()
         return df
     except Exception as e:
-        print(f"Ошибка при чтении файла {DATA_FILE}: {e}")
+        print(f"Ошибка при чтении БД: {e}")
         return pd.DataFrame(columns=['type', 'description', 'amount', 'category', 'source', 'date'])
 
 def _save_transactions(df: pd.DataFrame):
     """
-    Сохраняет транзакции в файл
+    Сохраняет транзакции в БД
 
        Args:
            df(pd.DataFrame): Датафрейм с транзакциями
@@ -35,10 +40,12 @@ def _save_transactions(df: pd.DataFrame):
             Exceprion: Если произошла ошибка при чтении файла.
     """
     try:
-        df.to_csv(DATA_FILE, sep=';', index=False, encoding='cp1251')
-        print(f"Данные успешно сохранены в {DATA_FILE}")
+        conn = sqlite3.connect(DATA_FILE)
+        df.to_sql('transactions', conn, if_exists='append', index=False)
+        print(f"Данные успешно записаны в базу данных")
+        conn.close()
     except Exception as e:
-        print(f"Ошибка при сохранении файла {DATA_FILE}: {e}")
+        print(f"Ошибка при записи данных в БД: {e}")
 def add_expense(transaction):
     """
     Подготавливает данные для записи в файл
@@ -69,8 +76,21 @@ def add_expense(transaction):
         print("Неподдерживаемый тип транзакции.")
         return
 
-    df = pd.concat([df, new_row], ignore_index=True)
-    _save_transactions(df)
+    _save_transactions(new_row)
+
+def save_backup():
+    """
+    Сохраняет транзакции из Датафрейма (предварительно, сформировав его из БД) в CSV файл.
+
+    Raises:
+        Exceprion: Если произошла ошибка при сохранении.
+    """
+    try:
+        df = _load_transactions()
+        df.to_csv(BACKUP_FILE, index=False, encoding='cp1251', sep=';')
+        print(f"Копия транзакций сохранена в файле {BACKUP_FILE}")
+    except Exception as e:
+        print(f"Ошибка при сохранении копии в файл {BACKUP_FILE}: {e}")
 
 def get_transactions(start_date: datetime = None, end_date: datetime = None) -> pd.DataFrame:
     """Фильтрует датафрейм по заданным условиям

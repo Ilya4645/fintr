@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.storage.add_expense"><code class="docutils literal notranslate"><span class="pre">add_expense()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.storage.delete_transaction"><code class="docutils literal notranslate"><span class="pre">delete_transaction()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fintracker.storage.get_transactions"><code class="docutils literal notranslate"><span class="pre">get_transactions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fintracker.storage.save_backup"><code class="docutils literal notranslate"><span class="pre">save_backup()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -79,9 +80,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-fintracker.storage">
-<span id="storage"></span><h1>Модуль Storage<a class="headerlink" href="#module-fintracker.storage" title="Ссылка на этот заголовок"></a></h1>
-<dl class="py function">
+  <section id="storage">
+<h1>Модуль Storage<a class="headerlink" href="#storage" title="Ссылка на этот заголовок"></a></h1>
+<p>Модуль <strong>storage</strong> - добавление, удаление транзакций.</p>
+<dl class="py function" id="module-fintracker.storage">
 <dt class="sig sig-object py" id="fintracker.storage.add_expense">
 <span class="sig-prename descclassname"><span class="pre">fintracker.storage.</span></span><span class="sig-name descname"><span class="pre">add_expense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.storage.add_expense" title="Ссылка на это определение"></a></dt>
 <dd><p>Подготавливает данные для записи в файл</p>
@@ -120,6 +122,17 @@
 </dd>
 <dt class="field-even">Тип результата<span class="colon">:</span></dt>
 <dd class="field-even"><p>df</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fintracker.storage.save_backup">
+<span class="sig-prename descclassname"><span class="pre">fintracker.storage.</span></span><span class="sig-name descname"><span class="pre">save_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fintracker.storage.save_backup" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохраняет транзакции из Датафрейма (предварительно, сформировав его из БД) в CSV файл.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exceprion</strong> – Если произошла ошибка при сохранении.</p>
 </dd>
 </dl>
 </dd></dl>

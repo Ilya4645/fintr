@@ -42,6 +42,10 @@ def main():
     parser_delete.add_argument('--number', type=int, required=True, help='Номер транзакции для удаления (см. вывод команды view)')
     parser_delete.set_defaults(func=commands.delete_command)
 
+    """Команда создании резервной копии транзакций --backup"""
+    parser_backup = subparsers.add_parser('backup', help='Создать копию транзакций')
+    parser_backup.set_defaults(func=commands.backup_command)
+
     args = parser.parse_args()
 
     if hasattr(args, 'func'):

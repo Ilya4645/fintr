@@ -6,6 +6,8 @@
 Fintracker documentation
 ========================
 
+Добро пожаловать в документацию по **Fintracker**!
+
 
 .. toctree::
    :maxdepth: 2
